@@ -1,3 +1,5 @@
+'use strict';
+
 const store = {
   items: [
     { id: cuid(), name: 'apples', checked: false },
@@ -26,6 +28,13 @@ const generateItemElement = function (item) {
         <button class='shopping-item-delete js-item-delete'>
           <span class='button-label'>delete</span>
         </button>
+        <div class='rename'>
+          <label for="shopping-list-rename">Rename an item</label>
+          <input type="text" name="shopping-list-rename" class="js-shopping-list-rename" placeholder="e.g., broccoli">
+          <button class='shopping-item-rename js-item-rename'>
+          <span class='button-label'>rename</span>
+          </button>
+        </div>
       </div>
     </li>`;
 };
@@ -72,6 +81,21 @@ const handleNewItemSubmit = function () {
     const newItemName = $('.js-shopping-list-entry').val();
     $('.js-shopping-list-entry').val('');
     addItemToShoppingList(newItemName);
+    render();
+  });
+};
+
+const RenameItemToShoppingList = function (newName, itemID) {
+  const findItem = store.items.find(item => item.id === itemID);
+  findItem.name = `${newName}`;
+};
+
+const handleItemRename = function () {
+  $('.js-shopping-list').on('click', '.js-item-rename', event => {
+    const id = getItemIdFromElement(event.currentTarget);
+    const newItemRename = $('.js-shopping-list-rename').val();
+    $('.js-shopping-list-rename').val('');
+    RenameItemToShoppingList(newItemRename, id);
     render();
   });
 };
@@ -159,6 +183,7 @@ const handleShoppingList = function () {
   handleNewItemSubmit();
   handleItemCheckClicked();
   handleDeleteItemClicked();
+  handleItemRename();
   handleToggleFilterClick();
 };
 
